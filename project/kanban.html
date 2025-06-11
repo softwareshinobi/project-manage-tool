@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kanban Board - Superhero</title>
+    <!-- Bootswatch Superhero Theme -->
+    <link href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.3/dist/superhero/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Roboto+Condensed:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --superhero-accent: #df691a; /* Superhero's default orange accent */
+            --superhero-dark-bg: #4e5d6c; /* A dark gray from the theme */
+            --superhero-light-text: #ebf1f6;
+            --superhero-column-bg: #373a3c;
+        }
+
+        html, body {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            background-color: var(--bs-body-bg);
+        }
+
+        body {
+            font-family: 'Roboto Condensed', sans-serif;
+        }
+
+        .main-content {
+            flex-grow: 1;
+            padding: 1rem;
+            overflow-y: auto;
+        }
+
+        .kanban-board {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            height: 100%;
+        }
+
+        .kanban-column {
+            background-color: var(--superhero-column-bg);
+            border-radius: 10px;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid var(--bs-gray-600);
+        }
+
+        .kanban-column.drag-over {
+            border: 2px dashed var(--superhero-accent);
+            background-color: #5a6878;
+        }
+
+        .column-title {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--superhero-accent);
+            text-align: center;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--superhero-accent);
+            margin-bottom: 1rem;
+        }
+
+        .cards-container {
+            flex-grow: 1;
+            overflow-y: auto;
+            min-height: 400px;
+        }
+
+        .kanban-card {
+            background-color: var(--superhero-dark-bg);
+            color: var(--superhero-light-text);
+            padding: 1rem;
+            border-radius: 5px;
+            margin-bottom: 0.75rem;
+            border-left: 5px solid var(--bs-primary);
+            cursor: grab;
+            transition: opacity 0.2s ease;
+        }
+
+        .kanban-card.dragging {
+            opacity: 0.5;
+        }
+
+        .kanban-card h5 {
+            font-family: 'Orbitron', sans-serif;
+            margin-bottom: 0.5rem;
+            color: #fff;
+        }
+
+        .kanban-card p {
+            font-size: 0.9rem;
+            margin-bottom: 0;
+        }
+
+        footer {
+            background-color: var(--bs-dark);
+            color: var(--bs-gray-500);
+            padding: 1rem;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        /* Toast positioning */
+        .toast-container {
+            z-index: 1100;
+        }
+
+        /* Mobile adjustments */
+        @media (max-width: 992px) {
+            .kanban-board {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#" style="font-family: 'Orbitron', sans-serif;">Kanban</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="projectDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Select Project
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="projectDropdown" id="projectList">
+                           <!-- JS will populate this -->
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="kanban-board" id="kanbanBoard">
+            <!-- Kanban board will be rendered here by JS -->
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-dark">
+        <p class="mb-0">&copy; 2024 Kanban Project Management. All Rights Reserved.</p>
+    </footer>
+
+    <!-- Toast Container -->
+    <div class="toast-container position-fixed top-0 end-0 p-3">
+      <div id="moveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header">
+          <strong class="me-auto">Update</strong>
+          <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body" id="toastBody">
+          <!-- JS will populate this -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="moveModal" tabindex="-1" aria-labelledby="moveModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="moveModalLabel">Task Status Updated</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body" id="modalBody">
+            <!-- JS will populate this -->
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const kanbanBoard = document.getElementById('kanbanBoard');
+            const projectList = document.getElementById('projectList');
+            const projectDropdown = document.getElementById('projectDropdown');
+
+            const moveModalEl = document.getElementById('moveModal');
+            const moveModal = new bootstrap.Modal(moveModalEl);
+            const modalBody = document.getElementById('modalBody');
+            const moveToastEl = document.getElementById('moveToast');
+            const moveToast = new bootstrap.Toast(moveToastEl);
+            const toastBody = document.getElementById('toastBody');
+
+            let draggedCard = null;
+            let currentProjectId = 'alpha';
+
+            const projectsData = {
+                'alpha': {
+                    name: 'Project Alpha',
+                    columns: {
+                        backlog: [{ id: 'card-1', title: 'API Integration', content: 'Integrate third-party payment gateway.' }],
+                        todo: [{ id: 'card-2', title: 'UI Mockups', content: 'Create high-fidelity mockups in Figma.' }],
+                        inprogress: [{ id: 'card-3', title: 'Database Schema', content: 'Finalize the schema for user tables.' }],
+                        completed: [{ id: 'card-4', title: 'Project Setup', content: 'Initialize repository and environment.' }]
+                    }
+                },
+                'beta': {
+                    name: 'Project Beta',
+                    columns: {
+                        backlog: [{ id: 'card-5', title: 'Marketing Campaign', content: 'Plan social media outreach.' }, {id: 'card-6', title: 'User Feedback', content: 'Collect and analyze user survey data.'}],
+                        todo: [],
+                        inprogress: [{ id: 'card-7', title: 'Logo Design', content: 'Create three initial logo concepts.' }],
+                        completed: []
+                    }
+                },
+                'gamma': {
+                    name: 'Project Gamma',
+                    columns: {
+                        backlog: [],
+                        todo: [],
+                        inprogress: [],
+                        completed: [{ id: 'card-8', title: 'Requirement Analysis', content: 'Define project scope and deliverables.'}]
+                    }
+                }
+            };
+
+            function renderBoard(projectId) {
+                currentProjectId = projectId;
+                const project = projectsData[projectId];
+                projectDropdown.textContent = project.name;
+                kanbanBoard.innerHTML = '';
+
+                const columnOrder = ['backlog', 'todo', 'inprogress', 'completed'];
+                const columnTitles = {
+                    backlog: 'Backlog',
+                    todo: 'To Do',
+                    inprogress: 'In Progress',
+                    completed: 'Completed'
+                };
+
+                columnOrder.forEach(columnKey => {
+                    const columnData = project.columns[columnKey];
+                    const columnName = columnTitles[columnKey];
+
+                    const columnEl = document.createElement('div');
+                    columnEl.className = 'kanban-column';
+                    columnEl.id = columnKey;
+                    columnEl.dataset.columnName = columnName;
+
+                    const titleEl = document.createElement('h2');
+                    titleEl.className = 'column-title';
+                    titleEl.textContent = columnName;
+
+                    const cardsContainer = document.createElement('div');
+                    cardsContainer.className = 'cards-container';
+
+                    columnData.forEach(cardData => {
+                        const cardEl = document.createElement('div');
+                        cardEl.className = 'kanban-card';
+                        cardEl.draggable = true;
+                        cardEl.id = cardData.id;
+                        cardEl.innerHTML = `<h5>${cardData.title}</h5><p>${cardData.content}</p>`;
+                        cardsContainer.appendChild(cardEl);
+                    });
+
+                    columnEl.appendChild(titleEl);
+                    columnEl.appendChild(cardsContainer);
+                    kanbanBoard.appendChild(columnEl);
+                });
+
+                attachDragAndDropListeners();
+            }
+
+            function attachDragAndDropListeners() {
+                const cards = document.querySelectorAll('.kanban-card');
+                const columns = document.querySelectorAll('.kanban-column .cards-container');
+
+                cards.forEach(card => {
+                    card.addEventListener('dragstart', () => {
+                        draggedCard = card;
+                        setTimeout(() => card.classList.add('dragging'), 0);
+                    });
+
+                    card.addEventListener('dragend', () => {
+                        card.classList.remove('dragging');
+                        draggedCard = null;
+                    });
+                });
+
+                columns.forEach(column => {
+                    column.addEventListener('dragover', e => {
+                        e.preventDefault();
+                        column.parentElement.classList.add('drag-over');
+                    });
+
+                    column.addEventListener('dragleave', () => {
+                        column.parentElement.classList.remove('drag-over');
+                    });
+
+                    column.addEventListener('drop', e => {
+                        e.preventDefault();
+                        column.parentElement.classList.remove('drag-over');
+
+                        if (draggedCard) {
+                            const fromColumnName = draggedCard.parentElement.parentElement.dataset.columnName;
+                            const toColumnName = column.parentElement.dataset.columnName;
+                            const taskTitle = draggedCard.querySelector('h5').textContent;
+
+                            column.appendChild(draggedCard);
+
+                            modalBody.textContent = `Moved task "${taskTitle}" from '${fromColumnName}' to '${toColumnName}'.`;
+                            moveModal.show();
+
+                            toastBody.textContent = `Task "${taskTitle}" moved to ${toColumnName}.`;
+                            moveToast.show();
+                        }
+                    });
+                });
+            }
+
+            function populateProjectSwitcher() {
+                projectList.innerHTML = '';
+                for(const projectId in projectsData) {
+                    const project = projectsData[projectId];
+                    const li = document.createElement('li');
+                    const a = document.createElement('a');
+                    a.className = 'dropdown-item';
+                    a.href = '#';
+                    a.textContent = project.name;
+                    a.dataset.projectId = projectId;
+                    li.appendChild(a);
+                    projectList.appendChild(li);
+
+                    a.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        renderBoard(projectId);
+                    })
+                }
+            }
+
+            // Initial Load
+            populateProjectSwitcher();
+            renderBoard(currentProjectId);
+        });
+    </script>
+</body>
+</html>

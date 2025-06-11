@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create To-Do - Superhero</title>
+    <!-- Bootswatch Superhero Theme -->
+    <link href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.3/dist/superhero/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Roboto+Condensed:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --superhero-accent: #df691a;
+            --superhero-dark-bg: #4e5d6c;
+            --superhero-light-text: #ebf1f6;
+            --superhero-column-bg: #373a3c;
+        }
+
+        html, body {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            background-color: var(--bs-body-bg);
+        }
+
+        body {
+            font-family: 'Roboto Condensed', sans-serif;
+        }
+
+        .main-content {
+            flex-grow: 1;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+
+        .form-container {
+            background-color: var(--superhero-column-bg);
+            padding: 2rem;
+            border-radius: 10px;
+            border: 1px solid var(--bs-gray-600);
+        }
+
+        .form-section-title {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--superhero-accent);
+            border-bottom: 2px solid var(--superhero-accent);
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .input-group-text {
+            font-weight: 700;
+            background-color: var(--superhero-dark-bg);
+            color: var(--superhero-light-text);
+            border-color: var(--bs-gray-600);
+        }
+
+        .checklist-item {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        footer {
+            background-color: var(--bs-dark);
+            color: var(--bs-gray-500);
+            padding: 1rem;
+            text-align: center;
+            flex-shrink: 0;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#" style="font-family: 'Orbitron', sans-serif;">Kanban</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                         <a class="nav-link" href="#">Board</a>
+                    </li>
+                     <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="#">Add Task</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="projectDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Project Alpha
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="projectDropdown" id="projectList">
+                           <li><a class="dropdown-item" href="#">Project Alpha</a></li>
+                           <li><a class="dropdown-item" href="#">Project Beta</a></li>
+                           <li><a class="dropdown-item" href="#">Project Gamma</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <div class="form-container">
+                <h2 class="form-section-title">Add New Task</h2>
+                <form id="todoForm">
+                    <!-- Task Title & ID-->
+                    <div class="row mb-4">
+                        <div class="col-md-2">
+                             <label for="taskId" class="form-label fs-5">Task ID</label>
+                             <input type="text" class="form-control" id="taskId" value="1056" disabled>
+                        </div>
+                        <div class="col-md-10">
+                            <label for="taskTitle" class="form-label fs-5">Task Title</label>
+                            <input type="text" class="form-control" id="taskTitle" placeholder="e.g., Deploy to production server" required>
+                        </div>
+                    </div>
+
+
+                    <!-- Checklist / Sub-tasks -->
+                    <h4 class="form-section-title mt-5">Checklist / Sub-tasks</h4>
+                    <div id="checklistContainer">
+                        <div class="checklist-item">
+                            <input type="text" class="form-control" placeholder="e.g., Backup the database">
+                            <button type="button" class="btn btn-sm btn-danger remove-item-btn"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </div>
+                    <button type="button" id="addItemBtn" class="btn btn-secondary mt-2"><i class="fas fa-plus"></i> Add Item</button>
+
+                    <!-- Details -->
+                    <h4 class="form-section-title mt-5">Details</h4>
+                    <div class="row">
+                         <div class="col-md-4 mb-3">
+                             <label for="assignProject" class="form-label">Assign to Project</label>
+                             <select class="form-select" id="assignProject">
+                                <option>Project Alpha</option>
+                                <option>Project Beta</option>
+                                <option>Project Gamma</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                             <label for="taskPriority" class="form-label">Priority</label>
+                             <select class="form-select" id="taskPriority">
+                                <option>High</option>
+                                <option selected>Medium</option>
+                                <option>Low</option>
+                            </select>
+                        </div>
+                         <div class="col-md-4 mb-3">
+                             <label for="taskEffort" class="form-label">Level of Effort</label>
+                             <select class="form-select" id="taskEffort">
+                                <option>1 - XS</option>
+                                <option>2 - S</option>
+                                <option selected>3 - M</option>
+                                <option>5 - L</option>
+                                <option>8 - XL</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="taskComments" class="form-label">Comments</label>
+                        <textarea class="form-control" id="taskComments" rows="4" placeholder="Add any relevant notes or details..."></textarea>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="d-flex justify-content-end gap-2 mt-5">
+                        <button type="reset" id="resetBtn" class="btn btn-danger">Reset</button>
+                        <button type="button" class="btn btn-outline-secondary">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Add Task</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-dark">
+        <p class="mb-0">&copy; 2024 Kanban Project Management. All Rights Reserved.</p>
+    </footer>
+
+    <!-- Toast Container for confirmation -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+      <div id="addToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header">
+          <strong class="me-auto"><i class="fas fa-check-circle text-success me-2"></i>Task Added</strong>
+          <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body" id="toastBody">
+          <!-- JS will populate this -->
+        </div>
+      </div>
+    </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const addItemBtn = document.getElementById('addItemBtn');
+            const checklistContainer = document.getElementById('checklistContainer');
+            const todoForm = document.getElementById('todoForm');
+            const addToastEl = document.getElementById('addToast');
+            const addToast = new bootstrap.Toast(addToastEl);
+            const toastBody = document.getElementById('toastBody');
+            const resetBtn = document.getElementById('resetBtn');
+
+
+            // Add new checklist item field
+            addItemBtn.addEventListener('click', () => {
+                const newItem = document.createElement('div');
+                newItem.className = 'checklist-item';
+                newItem.innerHTML = `
+                    <input type="text" class="form-control" placeholder="Add another sub-task...">
+                    <button type="button" class="btn btn-sm btn-danger remove-item-btn"><i class="fas fa-trash"></i></button>
+                `;
+                checklistContainer.appendChild(newItem);
+            });
+
+            // Remove checklist item field (using event delegation)
+            checklistContainer.addEventListener('click', (e) => {
+                const removeBtn = e.target.closest('.remove-item-btn');
+                if (removeBtn) {
+                    removeBtn.parentElement.remove();
+                }
+            });
+
+            // Handle form submission
+            todoForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+
+                // Collect checklist items
+                const checklistInputs = checklistContainer.querySelectorAll('input[type="text"]');
+                const checklist = [];
+                checklistInputs.forEach(input => {
+                    if (input.value.trim() !== '') {
+                        checklist.push(input.value.trim());
+                    }
+                });
+
+                const taskTitle = document.getElementById('taskTitle').value;
+                const assignedProject = document.getElementById('assignProject').value;
+
+                // Construct the task object
+                const task = {
+                    id: document.getElementById('taskId').value,
+                    title: taskTitle,
+                    project: assignedProject,
+                    checklist: checklist,
+                    priority: document.getElementById('taskPriority').value,
+                    effort: document.getElementById('taskEffort').value,
+                    comments: document.getElementById('taskComments').value
+                };
+
+                // For demonstration, log the task object to the console
+                console.log("New Task Created:", task);
+
+                // Show confirmation toast
+                toastBody.textContent = `Task "${taskTitle}" was successfully added to ${assignedProject}.`;
+                addToast.show();
+
+                // Reset the form
+                todoForm.reset();
+                while(checklistContainer.children.length > 1) {
+                    checklistContainer.removeChild(checklistContainer.lastChild);
+                }
+                checklistContainer.querySelector('input').value = '';
+
+            });
+
+            // Handle form reset
+            resetBtn.addEventListener('click', () => {
+                 while(checklistContainer.children.length > 1) {
+                    checklistContainer.removeChild(checklistContainer.lastChild);
+                }
+                // The main form fields are reset automatically by type="reset"
+            });
+        });
+    </script>
+</body>
+</html>

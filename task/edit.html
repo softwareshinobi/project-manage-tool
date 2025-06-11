@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Task - Superhero</title>
+    <!-- Bootswatch Superhero Theme -->
+    <link href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.3/dist/superhero/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Roboto+Condensed:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --superhero-accent: #df691a;
+            --superhero-dark-bg: #4e5d6c;
+            --superhero-light-text: #ebf1f6;
+            --superhero-column-bg: #373a3c;
+        }
+
+        html, body {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            background-color: var(--bs-body-bg);
+        }
+
+        body {
+            font-family: 'Roboto Condensed', sans-serif;
+        }
+
+        .main-content {
+            flex-grow: 1;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+
+        .task-view-container {
+            background-color: var(--superhero-column-bg);
+            padding: 2rem;
+            border-radius: 10px;
+            border: 1px solid var(--bs-gray-600);
+        }
+
+        .section-title {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--superhero-accent);
+            border-bottom: 2px solid var(--superhero-accent);
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .detail-item {
+            margin-bottom: 1rem;
+        }
+        .detail-item label, .form-label {
+            font-weight: 700;
+            color: var(--bs-gray-500);
+            display: block;
+            font-size: 0.9rem;
+        }
+        .detail-item .value {
+            font-size: 1.1rem;
+            color: var(--superhero-light-text);
+        }
+
+        .checklist-item-view {
+            background-color: var(--superhero-dark-bg);
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            margin-bottom: 0.5rem;
+        }
+
+        .comment {
+            border-bottom: 1px solid var(--superhero-dark-bg);
+            padding: 1rem 0;
+        }
+        .comment:last-child {
+            border-bottom: none;
+        }
+        .comment-author {
+            font-weight: 700;
+            color: var(--superhero-accent);
+        }
+         .comment-timestamp {
+            font-size: 0.8rem;
+            color: var(--bs-gray-500);
+        }
+        .comment-body {
+            margin-top: 0.5rem;
+        }
+
+        footer {
+            background-color: var(--bs-dark);
+            color: var(--bs-gray-500);
+            padding: 1rem;
+            text-align: center;
+            flex-shrink: 0;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#" style="font-family: 'Orbitron', sans-serif;">Kanban</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                         <a class="nav-link" href="#">Board</a>
+                    </li>
+                     <li class="nav-item">
+                        <a class="nav-link" href="#">Add Task</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="projectDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Project Alpha
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="projectDropdown" id="projectList">
+                           <li><a class="dropdown-item" href="#">Project Alpha</a></li>
+                           <li><a class="dropdown-item" href="#">Project Beta</a></li>
+                           <li><a class="dropdown-item" href="#">Project Gamma</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <form id="editTaskForm">
+                <div class="task-view-container">
+                    <div class="row">
+                        <!-- Left Column: Details -->
+                        <div class="col-lg-4">
+                            <h2 class="section-title">Edit Task</h2>
+                            <div class="detail-item">
+                                <label>Task ID</label>
+                                <span class="value">1056</span>
+                            </div>
+                            <div class="mb-3">
+                                <label for="taskTitle" class="form-label">Title</label>
+                                <input type="text" class="form-control" id="taskTitle" value="Deploy to production server">
+                            </div>
+                             <div class="mb-3">
+                                 <label for="taskProject" class="form-label">Project</label>
+                                 <select class="form-select" id="taskProject">
+                                    <option selected>Project Alpha</option>
+                                    <option>Project Beta</option>
+                                    <option>Project Gamma</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="taskPriority" class="form-label">Priority</label>
+                                <select class="form-select" id="taskPriority">
+                                    <option>High</option>
+                                    <option selected>Medium</option>
+                                    <option>Low</option>
+                                </select>
+                            </div>
+                             <div class="mb-3">
+                                <label for="taskEffort" class="form-label">Level of Effort</label>
+                                <select class="form-select" id="taskEffort">
+                                    <option>1 - XS</option>
+                                    <option>2 - S</option>
+                                    <option selected>3 - M</option>
+                                    <option>5 - L</option>
+                                    <option>8 - XL</option>
+                                </select>
+                            </div>
+                            <hr>
+                            <div class="detail-item">
+                                <label>Created On</label>
+                                <span class="value">2024-06-10 08:30 PM</span>
+                            </div>
+                            <div class="detail-item">
+                                <label>Last Updated</label>
+                                <span id="lastUpdated" class="value">2024-06-10 09:15 PM</span>
+                            </div>
+                        </div>
+                        <!-- Right Column: Checklist & Comments -->
+                        <div class="col-lg-8">
+                            <h2 class="section-title">Checklist</h2>
+                            <div id="checklistDisplay">
+                                <div class="checklist-item-view">
+                                    <div class="form-check">
+                                      <input class="form-check-input" type="checkbox" value="" id="check1" checked>
+                                      <label class="form-check-label" for="check1">
+                                        Backup the database
+                                      </label>
+                                    </div>
+                                </div>
+                                 <div class="checklist-item-view">
+                                    <div class="form-check">
+                                      <input class="form-check-input" type="checkbox" value="" id="check2">
+                                      <label class="form-check-label" for="check2">
+                                        Run migration scripts
+                                      </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <h2 class="section-title mt-5">Comments</h2>
+                            <div id="commentsContainer">
+                               <div class="comment">
+                                    <p class="mb-1"><strong class="comment-author">Alex W.</strong> <span class="comment-timestamp ms-2">Today at 9:15 PM</span></p>
+                                    <p class="comment-body">Just a heads up, the migration script might take longer than expected. Plan for a 30-minute window.</p>
+                               </div>
+                               <div class="comment">
+                                    <p class="mb-1"><strong class="comment-author">Leila H.</strong> <span class="comment-timestamp ms-2">Today at 8:40 PM</span></p>
+                                    <p class="comment-body">Confirmed the backup process is in place. We are ready to proceed.</p>
+                               </div>
+                            </div>
+                            <div id="commentForm" class="mt-4">
+                                <div class="mb-3">
+                                    <textarea class="form-control" id="newComment" rows="3" placeholder="Add a comment..."></textarea>
+                                </div>
+                                <div class="text-end">
+                                    <button type="button" id="addCommentBtn" class="btn btn-secondary">Post Comment</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-4">
+                        <div class="col-12 text-end">
+                            <button type="button" class="btn btn-outline-secondary">Cancel</button>
+                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-dark">
+        <p class="mb-0">&copy; 2024 Kanban Project Management. All Rights Reserved.</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const editTaskForm = document.getElementById('editTaskForm');
+            const addCommentBtn = document.getElementById('addCommentBtn');
+            const commentsContainer = document.getElementById('commentsContainer');
+            const newCommentInput = document.getElementById('newComment');
+            const lastUpdatedEl = document.getElementById('lastUpdated');
+
+            function getCurrentTimestamp() {
+                 const now = new Date();
+                 const dateString = now.toLocaleDateString();
+                 const timeString = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                 return `${dateString} ${timeString}`;
+            }
+
+            addCommentBtn.addEventListener('click', () => {
+                const commentText = newCommentInput.value.trim();
+                if (commentText === '') return;
+
+                const newCommentEl = document.createElement('div');
+                newCommentEl.className = 'comment';
+                newCommentEl.innerHTML = `
+                   <p class="mb-1"><strong class="comment-author">You</strong> <span class="comment-timestamp ms-2">${getCurrentTimestamp()}</span></p>
+                   <p class="comment-body">${commentText}</p>
+                `;
+                commentsContainer.prepend(newCommentEl);
+                newCommentInput.value = '';
+                lastUpdatedEl.textContent = getCurrentTimestamp();
+            });
+
+            editTaskForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+
+                const checklistItems = [];
+                document.querySelectorAll('#checklistDisplay .form-check-input').forEach((checkbox, index) => {
+                    checklistItems.push({
+                        text: checkbox.nextElementSibling.textContent.trim(),
+                        completed: checkbox.checked
+                    });
+                });
+
+                const updatedTask = {
+                    id: '1056',
+                    title: document.getElementById('taskTitle').value,
+                    project: document.getElementById('taskProject').value,
+                    priority: document.getElementById('taskPriority').value,
+                    effort: document.getElementById('taskEffort').value,
+                    checklist: checklistItems,
+                    comments: Array.from(commentsContainer.children).map(c => ({
+                        author: c.querySelector('.comment-author').textContent,
+                        timestamp: c.querySelector('.comment-timestamp').textContent,
+                        body: c.querySelector('.comment-body').textContent
+                    }))
+                };
+
+                lastUpdatedEl.textContent = getCurrentTimestamp();
+                console.log("Task Updated:", updatedTask);
+                alert("Task saved successfully! Check console for data.");
+            });
+        });
+    </script>
+</body>
+</html>

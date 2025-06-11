@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task List - Superhero</title>
+    <!-- Bootswatch Superhero Theme -->
+    <link href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.3/dist/superhero/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Roboto+Condensed:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --superhero-accent: #df691a;
+            --superhero-dark-bg: #4e5d6c;
+            --superhero-light-text: #ebf1f6;
+            --superhero-column-bg: #373a3c;
+        }
+
+        html, body {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            background-color: var(--bs-body-bg);
+        }
+
+        body {
+            font-family: 'Roboto Condensed', sans-serif;
+        }
+
+        .main-content {
+            flex-grow: 1;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+
+        .table-container {
+             background-color: var(--superhero-column-bg);
+             padding: 2rem;
+             border-radius: 10px;
+        }
+
+        .table th {
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .action-btn {
+            color: var(--bs-gray-400);
+            text-decoration: none;
+            margin: 0 0.5rem;
+            transition: color 0.2s ease;
+        }
+        .action-btn:hover {
+            color: var(--bs-light);
+        }
+        .action-btn.delete:hover {
+            color: var(--bs-danger);
+        }
+        .action-btn.clone:hover {
+            color: var(--bs-info);
+        }
+
+        .analytics-card {
+            background-color: var(--superhero-column-bg);
+            padding: 1rem;
+            border-radius: 5px;
+            text-align: center;
+            border-left: 4px solid;
+        }
+        .analytics-card .count {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            display: block;
+        }
+         .analytics-card .percentage {
+            font-size: 0.9rem;
+            color: var(--bs-gray-500);
+        }
+
+        footer {
+            background-color: var(--bs-dark);
+            color: var(--bs-gray-500);
+            padding: 1rem;
+            text-align: center;
+            flex-shrink: 0;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#" style="font-family: 'Orbitron', sans-serif;">Kanban</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                         <a class="nav-link" href="#">Board</a>
+                    </li>
+                     <li class="nav-item">
+                        <a class="nav-link" href="#">Add Task</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="projectDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Project Alpha
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="projectDropdown" id="projectList">
+                           <li><a class="dropdown-item" href="#">Project Alpha</a></li>
+                           <li><a class="dropdown-item" href="#">Project Beta</a></li>
+                           <li><a class="dropdown-item" href="#">Project Gamma</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 style="font-family: 'Orbitron', sans-serif;">Project Alpha Tasks</h1>
+                <a href="#" class="btn btn-primary"><i class="fas fa-plus me-2"></i>Create New Task</a>
+            </div>
+
+            <!-- Analytics Section -->
+            <div class="row g-3 mb-4" id="analyticsSection">
+                 <div class="col">
+                    <div class="analytics-card" style="border-left-color: var(--bs-secondary)">
+                        Backlog
+                        <span class="count" id="backlogCount">0</span>
+                        <span class="percentage" id="backlogPct">0%</span>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="analytics-card" style="border-left-color: var(--bs-primary)">
+                        To Do
+                        <span class="count" id="todoCount">0</span>
+                        <span class="percentage" id="todoPct">0%</span>
+                    </div>
+                </div>
+                 <div class="col">
+                    <div class="analytics-card" style="border-left-color: var(--bs-info)">
+                        In Progress
+                        <span class="count" id="progressCount">0</span>
+                        <span class="percentage" id="progressPct">0%</span>
+                    </div>
+                </div>
+                 <div class="col">
+                    <div class="analytics-card" style="border-left-color: var(--bs-success)">
+                        Completed
+                        <span class="count" id="completedCount">0</span>
+                        <span class="percentage" id="completedPct">0%</span>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="table-container">
+                <div class="table-responsive">
+                    <table class="table table-dark table-hover">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Title</th>
+                                <th>Status</th>
+                                <th>Owner</th>
+                                <th>Priority</th>
+                                <th>Effort</th>
+                                <th>Last Modified</th>
+                                <th class="text-end">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="taskTableBody">
+                            <!-- JS will populate this -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-dark">
+        <p class="mb-0">&copy; 2024 Kanban Project Management. All Rights Reserved.</p>
+    </footer>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="deleteModalLabel">Confirm Deletion</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            Are you sure you want to delete task <strong id="taskToDeleteName"></strong>? This action cannot be undone.
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Delete Task</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const taskTableBody = document.getElementById('taskTableBody');
+            const deleteModalEl = document.getElementById('deleteModal');
+            const deleteModal = new bootstrap.Modal(deleteModalEl);
+            const taskToDeleteNameEl = document.getElementById('taskToDeleteName');
+            const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+            let taskToDeleteId = null;
+
+            let mockTasks = [
+                { id: 1056, title: 'Deploy to production server', priority: 'Medium', effort: '3 - M', status: 'In Progress', owner: 'Alex W.', lastModified: '2024-06-10 09:15 PM' },
+                { id: 1057, title: 'API Integration', priority: 'High', effort: '5 - L', status: 'Backlog', owner: 'Leila H.', lastModified: '2024-06-10 08:00 AM' },
+                { id: 1058, title: 'UI Mockups', priority: 'Medium', effort: '2 - S', status: 'To Do', owner: 'Sam C.', lastModified: '2024-06-09 05:30 PM' },
+                { id: 1059, title: 'Project Setup', priority: 'Low', effort: '1 - XS', status: 'Completed', owner: 'Alex W.', lastModified: '2024-06-08 11:00 AM' },
+                { id: 1060, title: 'Database Schema', priority: 'High', effort: '3 - M', status: 'In Progress', owner: 'Leila H.', lastModified: '2024-06-10 01:20 PM' }
+            ];
+
+            const priorityBadges = {
+                'High': 'bg-danger',
+                'Medium': 'bg-warning',
+                'Low': 'bg-info'
+            };
+
+            const statusBadges = {
+                 'Backlog': 'bg-secondary',
+                 'To Do': 'bg-primary',
+                 'In Progress': 'bg-info',
+                 'Completed': 'bg-success'
+            };
+
+            function renderAnalytics() {
+                const totalTasks = mockTasks.length;
+                const statusCounts = {
+                    'Backlog': 0,
+                    'To Do': 0,
+                    'In Progress': 0,
+                    'Completed': 0
+                };
+
+                mockTasks.forEach(task => {
+                    if (statusCounts.hasOwnProperty(task.status)) {
+                        statusCounts[task.status]++;
+                    }
+                });
+
+                document.getElementById('backlogCount').textContent = statusCounts['Backlog'];
+                document.getElementById('todoCount').textContent = statusCounts['To Do'];
+                document.getElementById('progressCount').textContent = statusCounts['In Progress'];
+                document.getElementById('completedCount').textContent = statusCounts['Completed'];
+
+                document.getElementById('backlogPct').textContent = `${totalTasks > 0 ? ((statusCounts['Backlog'] / totalTasks) * 100).toFixed(0) : 0}%`;
+                document.getElementById('todoPct').textContent = `${totalTasks > 0 ? ((statusCounts['To Do'] / totalTasks) * 100).toFixed(0) : 0}%`;
+                document.getElementById('progressPct').textContent = `${totalTasks > 0 ? ((statusCounts['In Progress'] / totalTasks) * 100).toFixed(0) : 0}%`;
+                document.getElementById('completedPct').textContent = `${totalTasks > 0 ? ((statusCounts['Completed'] / totalTasks) * 100).toFixed(0) : 0}%`;
+            }
+
+            function renderTasks() {
+                taskTableBody.innerHTML = '';
+                mockTasks.forEach(task => {
+                    const row = document.createElement('tr');
+                    row.dataset.taskId = task.id;
+                    row.innerHTML = `
+                        <td>${task.id}</td>
+                        <td>${task.title}</td>
+                        <td><span class="badge ${statusBadges[task.status]}">${task.status}</span></td>
+                        <td>${task.owner}</td>
+                        <td><span class="badge ${priorityBadges[task.priority]}">${task.priority}</span></td>
+                        <td><span class="badge bg-dark">${task.effort}</span></td>
+                        <td>${task.lastModified}</td>
+                        <td class="text-end">
+                            <a href="#" class="action-btn view" title="View"><i class="fas fa-eye"></i></a>
+                            <a href="#" class="action-btn edit" title="Edit"><i class="fas fa-pencil-alt"></i></a>
+                            <a href="#" class="action-btn clone" title="Clone"><i class="fas fa-clone"></i></a>
+                            <a href="#" class="action-btn delete" title="Delete"><i class="fas fa-trash"></i></a>
+                        </td>
+                    `;
+                    taskTableBody.appendChild(row);
+                });
+                renderAnalytics();
+            }
+
+            taskTableBody.addEventListener('click', (e) => {
+                e.preventDefault();
+                const target = e.target.closest('.action-btn');
+                if (!target) return;
+
+                const row = target.closest('tr');
+                const taskId = parseInt(row.dataset.taskId, 10);
+                const taskTitle = row.querySelector('td:nth-child(2)').textContent;
+
+                if (target.classList.contains('delete')) {
+                    taskToDeleteId = taskId;
+                    taskToDeleteNameEl.textContent = `"${taskTitle}" (ID: ${taskId})`;
+                    deleteModal.show();
+                } else if (target.classList.contains('clone')) {
+                    const originalTask = mockTasks.find(task => task.id === taskId);
+                    if (originalTask) {
+                        const newId = Math.max(...mockTasks.map(t => t.id)) + 1;
+                        const clonedTask = { ...originalTask, id: newId, title: `[CLONE] ${originalTask.title}`, status: 'Backlog', lastModified: new Date().toLocaleString() };
+                        mockTasks.push(clonedTask);
+                        renderTasks();
+                    }
+                }
+                else if (target.classList.contains('view')) {
+                    console.log(`Viewing task ${taskId}`);
+                    alert(`Viewing task: "${taskTitle}"`);
+                } else if (target.classList.contains('edit')) {
+                    console.log(`Editing task ${taskId}`);
+                    alert(`Editing task: "${taskTitle}"`);
+                }
+            });
+
+            confirmDeleteBtn.addEventListener('click', () => {
+                if (taskToDeleteId) {
+                    const taskIndex = mockTasks.findIndex(task => task.id == taskToDeleteId);
+                    if (taskIndex > -1) {
+                        mockTasks.splice(taskIndex, 1);
+                    }
+                    renderTasks();
+                    deleteModal.hide();
+                    taskToDeleteId = null;
+                }
+            });
+
+            // Initial render
+            renderTasks();
+        });
+    </script>
+</body>
+</html>
